@@ -1,137 +1,69 @@
 'use client';
 
-import { motion, HTMLMotionProps } from 'framer-motion';
-import { forwardRef } from 'react';
+import { ReactNode } from 'react';
 
-type CardVariant = 'default' | 'elevated' | 'glass' | 'interactive';
+type CardVariant = 'default' | 'elevated' | 'outline' | 'interactive';
+type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
-interface CardProps extends Omit<HTMLMotionProps<'div'>, 'ref'> {
+interface CardProps {
+    children: ReactNode;
     variant?: CardVariant;
-    padding?: 'none' | 'sm' | 'md' | 'lg';
-    hover?: boolean;
+    padding?: CardPadding;
+    className?: string;
+    onClick?: () => void;
 }
 
 const variantStyles: Record<CardVariant, string> = {
-    default: 'bg-[var(--bg-secondary)] border border-[var(--border-light)] shadow-[var(--shadow-sm)]',
-    elevated: 'bg-[var(--bg-elevated)] border border-[var(--border-light)] shadow-[var(--shadow-lg)]',
-    glass: 'bg-[var(--glass-bg)] backdrop-blur-[20px] border border-[var(--glass-border)] shadow-[var(--glass-shadow)]',
-    interactive: 'bg-[var(--bg-secondary)] border border-[var(--border-light)] shadow-[var(--shadow-sm)] cursor-pointer',
+    default: 'bg-white border border-slate-150 rounded-2xl shadow-sm',
+    elevated: 'bg-white border border-slate-150 rounded-2xl shadow-md',
+    outline: 'bg-white border-2 border-slate-100 rounded-xl',
+    interactive: 'bg-white border border-slate-150 rounded-2xl shadow-sm cursor-pointer hover:border-emerald-500/40 hover:shadow-lg hover:translate-y-[-2px] active:scale-[0.98] transition-all duration-300',
 };
 
-const paddingStyles: Record<string, string> = {
-    none: '',
+const paddingStyles: Record<CardPadding, string> = {
+    none: 'p-0',
     sm: 'p-4',
     md: 'p-6',
     lg: 'p-8',
 };
 
-export const Card = forwardRef<HTMLDivElement, CardProps>(
-    (
-        {
-            variant = 'default',
-            padding = 'md',
-            hover = true,
-            className = '',
-            children,
-            ...props
-        },
-        ref
-    ) => {
-        const isInteractive = variant === 'interactive';
-
-        return (
-            <motion.div
-                ref={ref}
-                className={`
-          rounded-[var(--radius-lg)] transition-all duration-200
-          ${variantStyles[variant]}
-          ${paddingStyles[padding]}
-          ${className}
-        `}
-                whileHover={
-                    hover
-                        ? {
-                            y: isInteractive ? -4 : -2,
-                            boxShadow: isInteractive
-                                ? 'var(--shadow-xl)'
-                                : 'var(--shadow-md)',
-                        }
-                        : undefined
-                }
-                transition={{ duration: 0.2 }}
-                {...props}
-            >
-                {children}
-            </motion.div>
-        );
-    }
-);
-
-Card.displayName = 'Card';
-
-// Card Header Component
-export const CardHeader = ({
-    className = '',
+export const Card = ({
     children,
-}: {
-    className?: string;
-    children: React.ReactNode;
-}) => (
-    <div className={`mb-4 ${className}`}>
-        {children}
-    </div>
-);
-
-// Card Title Component
-export const CardTitle = ({
+    variant = 'default',
+    padding = 'md',
     className = '',
-    children,
-}: {
-    className?: string;
-    children: React.ReactNode;
-}) => (
-    <h3 className={`text-lg font-semibold text-[var(--text-primary)] ${className}`}>
-        {children}
-    </h3>
+    onClick,
+}: CardProps) => {
+    return (
+        <div
+            className={`
+        ${variantStyles[variant]}
+        ${paddingStyles[padding]}
+        ${className}
+      `}
+            onClick={onClick}
+        >
+            {children}
+        </div>
+    );
+};
+
+export const CardHeader = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+    <div className={`mb-4 ${className}`}>{children}</div>
 );
 
-// Card Description Component
-export const CardDescription = ({
-    className = '',
-    children,
-}: {
-    className?: string;
-    children: React.ReactNode;
-}) => (
-    <p className={`text-sm text-[var(--text-secondary)] mt-1 ${className}`}>
-        {children}
-    </p>
+export const CardTitle = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+    <h3 className={`text-lg font-bold text-slate-900 ${className}`}>{children}</h3>
 );
 
-// Card Content Component
-export const CardContent = ({
-    className = '',
-    children,
-}: {
-    className?: string;
-    children: React.ReactNode;
-}) => (
-    <div className={className}>
-        {children}
-    </div>
+export const CardContent = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+    <div className={className}>{children}</div>
 );
 
-// Card Footer Component
-export const CardFooter = ({
-    className = '',
-    children,
-}: {
-    className?: string;
-    children: React.ReactNode;
-}) => (
-    <div className={`mt-4 pt-4 border-t border-[var(--border-light)] ${className}`}>
-        {children}
-    </div>
+export const CardDescription = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+    <p className={`text-sm text-slate-500 ${className}`}>{children}</p>
 );
 
-export default Card;
+export const CardFooter = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+    <div className={`mt-6 pt-6 border-t border-slate-100 ${className}`}>{children}</div>
+);

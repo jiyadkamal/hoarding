@@ -99,14 +99,28 @@ export default function PaymentModal({
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
+                        className="p-1"
                     >
                         {/* Amount Summary */}
-                        <div className="p-4 mb-6 rounded-[var(--radius-md)] bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-[var(--text-secondary)]">Total Amount</span>
-                                <span className="text-2xl font-bold text-[var(--text-primary)]">
-                                    ₹{amount.toLocaleString()}
-                                </span>
+                        <div className="relative p-7 mb-8 rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
+                            {/* Accent Bar */}
+                            <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500" />
+
+                            <div className="relative z-10 flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                                        Amount to Pay
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xl font-bold text-emerald-600">₹</span>
+                                        <span className="text-4xl font-black text-slate-900 tracking-tighter">
+                                            {amount.toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                                    <CreditCard className="w-7 h-7" />
+                                </div>
                             </div>
                         </div>
 
@@ -149,7 +163,7 @@ export default function PaymentModal({
                                 />
                             </div>
 
-                            <div className="flex items-center gap-2 text-xs text-[var(--text-tertiary)] mt-4">
+                            <div className="flex items-center gap-2 text-xs text-slate-400 mt-4">
                                 <Shield className="w-4 h-4" />
                                 <span>Your payment information is secure and encrypted</span>
                             </div>
@@ -158,14 +172,14 @@ export default function PaymentModal({
                                 <Button type="button" variant="secondary" fullWidth onClick={resetModal}>
                                     Cancel
                                 </Button>
-                                <Button type="submit" variant="gradient" fullWidth>
+                                <Button type="submit" variant="primary" fullWidth>
                                     Pay ₹{amount.toLocaleString()}
                                 </Button>
                             </div>
                         </form>
 
                         {/* Demo Note */}
-                        <p className="text-xs text-center text-[var(--text-tertiary)] mt-4 p-3 bg-[var(--bg-tertiary)] rounded-[var(--radius-md)]">
+                        <p className="text-xs text-center text-slate-400 mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100">
                             🎭 This is a demo payment. No real transaction will occur.
                             <br />
                             Use any card details to proceed.
@@ -182,16 +196,16 @@ export default function PaymentModal({
                         className="py-12 text-center"
                     >
                         <div className="relative w-20 h-20 mx-auto mb-6">
-                            <div className="absolute inset-0 rounded-full border-4 border-[var(--bg-tertiary)]" />
-                            <div className="absolute inset-0 rounded-full border-4 border-t-[var(--accent-primary)] animate-spin" />
+                            <div className="absolute inset-0 rounded-full border-4 border-slate-100" />
+                            <div className="absolute inset-0 rounded-full border-4 border-t-emerald-500 animate-spin" />
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <CreditCard className="w-8 h-8 text-[var(--accent-primary)]" />
+                                <CreditCard className="w-8 h-8 text-emerald-500" />
                             </div>
                         </div>
-                        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">
                             Processing Payment
                         </h3>
-                        <p className="text-sm text-[var(--text-secondary)]">
+                        <p className="text-sm text-slate-500">
                             Please wait while we confirm your payment...
                         </p>
                     </motion.div>
@@ -213,10 +227,10 @@ export default function PaymentModal({
                         >
                             <Check className="w-10 h-10 text-white" />
                         </motion.div>
-                        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
+                        <h3 className="text-lg font-semibold text-slate-800 mb-2">
                             Payment Successful!
                         </h3>
-                        <p className="text-sm text-[var(--text-secondary)]">
+                        <p className="text-sm text-slate-500">
                             Your booking has been confirmed.
                         </p>
                     </motion.div>

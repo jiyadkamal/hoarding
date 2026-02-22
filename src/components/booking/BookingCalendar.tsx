@@ -56,17 +56,14 @@ export default function BookingCalendar({
     };
 
     const handleDateClick = (date: Date) => {
-        if (isBefore(date, today)) return; // Can't select past dates
-        if (isDateBooked(date)) return; // Can't select booked dates
+        if (isBefore(date, today)) return;
+        if (isDateBooked(date)) return;
 
-        // If no start date or both dates are set, start fresh
         if (!startDate || (startDate && endDate && !isSameDay(startDate, endDate))) {
             onSelectStart(date);
-            onSelectEnd(date); // Initially set end same as start
+            onSelectEnd(date);
         } else if (startDate && endDate && isSameDay(startDate, endDate)) {
-            // We have a single date selected, now set range
             if (isAfter(date, startDate)) {
-                // Check if any booked dates are in the range
                 const hasBookedInRange = bookedDates.some(({ start, end }) => {
                     const bookingStart = startOfDay(start);
                     const bookingEnd = startOfDay(end);
@@ -77,15 +74,12 @@ export default function BookingCalendar({
                 if (!hasBookedInRange) {
                     onSelectEnd(date);
                 } else {
-                    // Booked date in range - start fresh with new date
                     onSelectStart(date);
                     onSelectEnd(date);
                 }
             } else if (isBefore(date, startDate)) {
-                // Clicked before start - swap: new date becomes start
                 const oldStart = startDate;
                 onSelectStart(date);
-                // Check if range is clear
                 const hasBookedInRange = bookedDates.some(({ start, end }) => {
                     const bookingStart = startOfDay(start);
                     const bookingEnd = startOfDay(end);
@@ -97,11 +91,9 @@ export default function BookingCalendar({
                     onSelectEnd(date);
                 }
             } else {
-                // Same date clicked - keep as single day selection
                 onSelectEnd(date);
             }
         } else {
-            // Fallback - start fresh
             onSelectStart(date);
             onSelectEnd(date);
         }
@@ -115,59 +107,61 @@ export default function BookingCalendar({
         const isEnd = isEndDate(date);
         const isToday = isSameDay(date, today);
 
-        let classes = 'w-10 h-10 rounded-lg text-sm font-medium transition-all ';
+        let classes = 'w-10 h-10 rounded-lg text-[13px] font-semibold transition-all ';
 
         if (isPast) {
-            classes += 'text-[var(--text-tertiary)] cursor-not-allowed opacity-40';
+            classes += 'text-slate-300 cursor-not-allowed opacity-30';
         } else if (isBooked) {
-            classes += 'bg-red-500/20 text-red-500 cursor-not-allowed line-through';
-        } else if (isStart || isEnd) {
-            classes += 'bg-[var(--accent-primary)] text-white cursor-pointer';
+            classes += 'bg-red-50 text-red-400 cursor-not-allowed line-through border border-red-100';
         } else if (isSelected) {
-            classes += 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] cursor-pointer';
+            if (isStart || isEnd) {
+                classes += 'bg-emerald-500 text-white z-10 scale-110 shadow-lg shadow-emerald-500/20';
+            } else {
+                classes += 'bg-emerald-50 text-emerald-700';
+            }
         } else if (isToday) {
-            classes += 'border-2 border-[var(--accent-primary)] text-[var(--text-primary)] cursor-pointer hover:bg-[var(--bg-tertiary)]';
+            classes += 'border-2 border-emerald-500 text-emerald-600';
         } else {
-            classes += 'text-[var(--text-primary)] cursor-pointer hover:bg-[var(--bg-tertiary)]';
+            classes += 'text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors';
         }
 
         return classes;
     };
 
     return (
-        <div className="bg-[var(--bg-secondary)] rounded-[var(--radius-lg)] p-4 border border-[var(--border-light)]">
+        <div className="bg-white border border-slate-150 rounded-2xl p-8 shadow-sm">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-100">
                 <button
                     type="button"
                     onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                    className="w-8 h-8 rounded-lg bg-[var(--bg-tertiary)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-150 flex items-center justify-center text-slate-400 hover:text-slate-700 transition"
                 >
                     <ChevronLeft className="w-4 h-4" />
                 </button>
-                <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">
                     {format(currentMonth, 'MMMM yyyy')}
                 </h3>
                 <button
                     type="button"
                     onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                    className="w-8 h-8 rounded-lg bg-[var(--bg-tertiary)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-150 flex items-center justify-center text-slate-400 hover:text-slate-700 transition"
                 >
                     <ChevronRight className="w-4 h-4" />
                 </button>
             </div>
 
             {/* Day Headers */}
-            <div className="grid grid-cols-7 gap-1 mb-2">
+            <div className="grid grid-cols-7 gap-2 mb-4">
                 {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-                    <div key={day} className="w-10 h-8 flex items-center justify-center text-xs font-medium text-[var(--text-tertiary)]">
+                    <div key={day} className="w-10 h-8 flex items-center justify-center text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                         {day}
                     </div>
                 ))}
             </div>
 
             {/* Days Grid */}
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-2">
                 {emptyDays.map((_, i) => (
                     <div key={`empty-${i}`} className="w-10 h-10" />
                 ))}
@@ -185,18 +179,14 @@ export default function BookingCalendar({
             </div>
 
             {/* Legend */}
-            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[var(--border-light)]">
-                <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                    <div className="w-3 h-3 rounded bg-red-500/20 border border-red-500/50" />
+            <div className="flex items-center gap-8 mt-10 pt-6 border-t border-slate-100">
+                <div className="flex items-center gap-3 text-[11px] uppercase font-bold text-slate-400 tracking-wider">
+                    <div className="w-3 h-3 rounded-full bg-red-400 opacity-30" />
                     <span>Booked</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                    <div className="w-3 h-3 rounded bg-[var(--accent-primary)]" />
+                <div className="flex items-center gap-3 text-[11px] uppercase font-bold text-slate-400 tracking-wider">
+                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
                     <span>Selected</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                    <div className="w-3 h-3 rounded border-2 border-[var(--accent-primary)]" />
-                    <span>Today</span>
                 </div>
             </div>
         </div>

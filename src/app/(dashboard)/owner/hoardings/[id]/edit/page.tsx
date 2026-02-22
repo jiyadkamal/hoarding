@@ -1,21 +1,24 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, X, Upload, MapPin, IndianRupee, Maximize2, ImagePlus, Loader2, Link as LinkIcon, Database } from 'lucide-react';
+import { ArrowLeft, Plus, X, IndianRupee, ImagePlus, Loader2, Link as LinkIcon, Database, Save } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
-import { Button, Input, Textarea, Select } from '@/components/ui';
+import { Input, Textarea, Select } from '@/components/ui';
 import { useAuth } from '@/context/AuthContext';
-import { createHoarding } from '@/lib/firebase/firestore';
+import { getHoarding, updateHoarding } from '@/lib/firebase/firestore';
 import { convertToBase64 } from '@/lib/firebase/storage';
 import { HoardingFormData } from '@/types';
 import toast from 'react-hot-toast';
 
-export default function NewHoardingPage() {
+export default function EditHoardingPage() {
     const router = useRouter();
+    const params = useParams();
+    const hoardingId = params.id as string;
     const { userData } = useAuth();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [useUrlMode, setUseUrlMode] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
@@ -33,6 +36,47 @@ export default function NewHoardingPage() {
         images: [],
     });
 
+    useEffect(() => {
+        if (hoardingId) {
+            loadHoarding();
+        }
+    }, [hoardingId]);
+
+    const loadHoarding = async () => {
+        try {
+            setLoading(true);
+            const hoarding = await getHoarding(hoardingId);
+            if (!hoarding) {
+                toast.error('Hoarding not found');
+                router.push('/owner/hoardings');
+                return;
+            }
+            // Check ownership
+            if (userData && hoarding.ownerId !== userData.uid) {
+                toast.error('You do not own this listing');
+                router.push('/owner/hoardings');
+                return;
+            }
+            setFormData({
+                title: hoarding.title,
+                description: hoarding.description,
+                address: hoarding.location.address,
+                city: hoarding.location.city,
+                state: hoarding.location.state,
+                width: hoarding.dimensions.width,
+                height: hoarding.dimensions.height,
+                unit: hoarding.dimensions.unit,
+                pricePerDay: hoarding.pricePerDay,
+                images: hoarding.images || [],
+            });
+        } catch (error) {
+            console.error('Error loading hoarding:', error);
+            toast.error('Failed to load hoarding');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
@@ -46,47 +90,32 @@ export default function NewHoardingPage() {
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
-        if (!userData) {
-            toast.error('Please login first');
-            return;
-        }
 
         const file = files[0];
 
-        // Validate file type
         if (!file.type.startsWith('image/')) {
             toast.error('Please select an image file');
             return;
         }
 
-        // Firestore Document Limit is 1MB. 
-        // Base64 is ~33% larger than binary. 
-        // To be safe, we limit images stored in DB to ~500KB.
         if (file.size > 500 * 1024) {
-            toast.error('For database storage, images must be under 500KB. Please use a smaller image or a URL.');
+            toast.error('Image must be under 500KB for database storage');
             return;
         }
 
         setUploading(true);
-
         try {
-            // Convert to Base64 to store directly in Firestore
             const base64String = await convertToBase64(file);
-
             setFormData((prev) => ({
                 ...prev,
                 images: [...prev.images, base64String],
             }));
-
-            toast.success('Image attached to listing');
-        } catch (error: any) {
-            console.error('Conversion error:', error);
-            toast.error('Failed to process image. Try using a URL instead.');
+            toast.success('Image added');
+        } catch (error) {
+            toast.error('Failed to process image');
         } finally {
             setUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -96,17 +125,14 @@ export default function NewHoardingPage() {
             const url = new URL(imageUrl);
             if (!url.protocol.startsWith('http')) throw new Error();
         } catch {
-            toast.error('Please enter a valid Image URL');
+            toast.error('Please enter a valid URL');
             return;
         }
         if (formData.images.includes(imageUrl)) {
             toast.error('Image already added');
             return;
         }
-        setFormData((prev) => ({
-            ...prev,
-            images: [...prev.images, imageUrl],
-        }));
+        setFormData((prev) => ({ ...prev, images: [...prev.images, imageUrl] }));
         setImageUrl('');
         toast.success('URL added');
     };
@@ -121,37 +147,22 @@ export default function NewHoardingPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!userData) {
-            toast.error('Please login first');
-            return;
-        }
-
         if (!formData.title || !formData.address || !formData.city || !formData.state) {
             toast.error('Please fill in all required fields');
             return;
         }
-
         if (formData.pricePerDay <= 0) {
             toast.error('Please enter a valid price');
             return;
         }
-
         if (formData.width <= 0 || formData.height <= 0) {
             toast.error('Please enter valid dimensions');
             return;
         }
 
-        if (formData.images.length === 0) {
-            toast.error('Please add at least one image');
-            return;
-        }
-
-        setLoading(true);
-
+        setSaving(true);
         try {
-            await createHoarding({
-                ownerId: userData.uid,
-                ownerName: userData.displayName,
+            await updateHoarding(hoardingId, {
                 title: formData.title,
                 description: formData.description,
                 location: {
@@ -166,16 +177,15 @@ export default function NewHoardingPage() {
                 },
                 pricePerDay: formData.pricePerDay,
                 images: formData.images,
-                isActive: true,
             });
 
-            toast.success('Hoarding added successfully!');
+            toast.success('Listing updated successfully!');
             router.push('/owner/hoardings');
         } catch (error) {
-            console.error('Error creating hoarding:', error);
-            toast.error('Failed to add hoarding (Document might be too large)');
+            console.error('Error updating hoarding:', error);
+            toast.error('Failed to update listing');
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
 
@@ -193,11 +203,22 @@ export default function NewHoardingPage() {
         { value: 'Kerala', label: 'Kerala' },
     ];
 
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <Loader2 className="w-8 h-8 text-emerald-500 animate-spin mx-auto" />
+                    <p className="text-sm text-slate-400">Loading listing details...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-white">
             <Header
-                title="List New Space"
-                subtitle="Monetize your physical advertising assets"
+                title="Edit Listing"
+                subtitle="Update your advertisement space details"
                 actions={
                     <button
                         onClick={() => router.back()}
@@ -234,7 +255,7 @@ export default function NewHoardingPage() {
                                 <Textarea
                                     label="Property Description"
                                     name="description"
-                                    placeholder="Describe the visibility, daily footfall, nearby landmarks, and illumination features..."
+                                    placeholder="Describe the visibility, daily footfall, nearby landmarks..."
                                     value={formData.description}
                                     onChange={handleChange}
                                     className="!bg-slate-50 border-slate-100 h-32"
@@ -352,7 +373,6 @@ export default function NewHoardingPage() {
                             </div>
 
                             <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-6">
-                                {/* Hidden file input */}
                                 <input
                                     ref={fileInputRef}
                                     type="file"
@@ -362,7 +382,6 @@ export default function NewHoardingPage() {
                                 />
 
                                 {useUrlMode ? (
-                                    /* URL paste mode */
                                     <div className="flex gap-3">
                                         <div className="flex-1">
                                             <input
@@ -383,7 +402,6 @@ export default function NewHoardingPage() {
                                         </button>
                                     </div>
                                 ) : (
-                                    /* Database storage mode */
                                     <button
                                         type="button"
                                         onClick={() => fileInputRef.current?.click()}
@@ -401,19 +419,14 @@ export default function NewHoardingPage() {
                                                     <Database className="w-6 h-6" />
                                                 </div>
                                                 <div className="text-center">
-                                                    <p className="text-[14px] font-semibold text-slate-700">
-                                                        Select Image for Database Storage
-                                                    </p>
-                                                    <p className="text-[12px] text-slate-400 mt-0.5">
-                                                        Max 500KB (to stay within free DB limits)
-                                                    </p>
+                                                    <p className="text-[14px] font-semibold text-slate-700">Add more images</p>
+                                                    <p className="text-[12px] text-slate-400 mt-0.5">Max 500KB per image</p>
                                                 </div>
                                             </>
                                         )}
                                     </button>
                                 )}
 
-                                {/* Image Preview Grid */}
                                 {formData.images.length > 0 && (
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         {formData.images.map((url, index) => (
@@ -434,9 +447,9 @@ export default function NewHoardingPage() {
                                     </div>
                                 )}
 
-                                {formData.images.length === 0 && !uploading && (
+                                {formData.images.length === 0 && (
                                     <p className="text-center text-[12px] text-slate-400">
-                                        No images added yet. Best for small images under 500KB.
+                                        No images. Add at least one photo of your space.
                                     </p>
                                 )}
                             </div>
@@ -453,13 +466,13 @@ export default function NewHoardingPage() {
                             </button>
                             <button
                                 type="submit"
-                                disabled={loading || uploading}
+                                disabled={saving || uploading}
                                 className="flex-1 h-14 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
                             >
-                                {loading ? (
+                                {saving ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : (
-                                    <>Publish Listing <Plus className="w-5 h-5" /></>
+                                    <>Save Changes <Save className="w-5 h-5" /></>
                                 )}
                             </button>
                         </div>

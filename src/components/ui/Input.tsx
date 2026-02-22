@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    id?: string;
     label?: string;
     error?: string;
     hint?: string;
@@ -16,6 +17,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
     (
         {
+            id,
             label,
             error,
             hint,
@@ -35,46 +37,46 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         return (
             <div className={`${fullWidth ? 'w-full' : ''}`}>
                 {label && (
-                    <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                    <label htmlFor={id} className="block text-[12px] font-semibold text-slate-500 mb-2 uppercase tracking-wider">
                         {label}
                     </label>
                 )}
-                <div className="relative">
+                <div className="relative group">
                     {icon && iconPosition === 'left' && (
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors pointer-events-none z-10">
                             {icon}
                         </div>
                     )}
                     <input
                         ref={ref}
+                        id={id}
                         type={inputType}
                         className={`
-              w-full px-4 py-3 text-sm
-              text-[var(--text-primary)] bg-[var(--bg-secondary)]
-              border rounded-[var(--radius-md)]
-              transition-all duration-150
-              placeholder:text-[var(--text-tertiary)]
-              hover:border-[var(--border-medium)]
-              focus:border-[var(--accent-primary)] focus:ring-[3px] focus:ring-[rgba(99,102,241,0.15)]
-              outline-none
-              ${icon && iconPosition === 'left' ? 'pl-10' : ''}
-              ${icon && iconPosition === 'right' || isPassword ? 'pr-10' : ''}
-              ${error ? 'border-[var(--error)] focus:ring-[rgba(239,68,68,0.15)]' : 'border-[var(--border-light)]'}
-              ${className}
-            `}
+                          w-full px-4 py-3 rounded-xl
+                          outline-none
+                          bg-white border border-slate-200 text-slate-800
+                          placeholder:text-slate-300
+                          focus:bg-white focus:border-emerald-500 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                          transition-all duration-300
+                          text-[14px]
+                          ${icon && iconPosition === 'left' ? '!pl-10' : ''}
+                          ${icon && iconPosition === 'right' || isPassword ? 'pr-10' : ''}
+                          ${error ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}
+                          ${className}
+                        `}
                         {...props}
                     />
                     {isPassword && (
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors z-10"
                         >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                     )}
                     {icon && iconPosition === 'right' && !isPassword && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10">
                             {icon}
                         </div>
                     )}
@@ -83,13 +85,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     <motion.p
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mt-1.5 text-xs text-[var(--error)]"
+                        className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1"
                     >
+                        <span className="w-1 h-1 rounded-full bg-red-500" />
                         {error}
                     </motion.p>
                 )}
                 {hint && !error && (
-                    <p className="mt-1.5 text-xs text-[var(--text-tertiary)]">{hint}</p>
+                    <p className="mt-1.5 text-xs text-slate-400">{hint}</p>
                 )}
             </div>
         );
@@ -100,37 +103,41 @@ Input.displayName = 'Input';
 
 // Textarea Component
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+    id?: string;
     label?: string;
     error?: string;
     fullWidth?: boolean;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-    ({ label, error, fullWidth = true, className = '', ...props }, ref) => (
+    ({ id, label, error, fullWidth = true, className = '', ...props }, ref) => (
         <div className={`${fullWidth ? 'w-full' : ''}`}>
             {label && (
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                <label htmlFor={id} className="block text-[12px] font-semibold text-slate-500 mb-2 uppercase tracking-wider">
                     {label}
                 </label>
             )}
             <textarea
                 ref={ref}
+                id={id}
                 className={`
-          w-full px-4 py-3 text-sm min-h-[120px] resize-y
-          text-[var(--text-primary)] bg-[var(--bg-secondary)]
-          border rounded-[var(--radius-md)]
-          transition-all duration-150
-          placeholder:text-[var(--text-tertiary)]
-          hover:border-[var(--border-medium)]
-          focus:border-[var(--accent-primary)] focus:ring-[3px] focus:ring-[rgba(99,102,241,0.15)]
-          outline-none
-          ${error ? 'border-[var(--error)]' : 'border-[var(--border-light)]'}
-          ${className}
-        `}
+                  w-full px-4 py-3 min-h-[120px] resize-y rounded-xl
+                  outline-none
+                  bg-white border border-slate-200 text-slate-800
+                  placeholder:text-slate-300
+                  focus:bg-white focus:border-emerald-500 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                  transition-all duration-300
+                  text-[14px]
+                  ${error ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}
+                  ${className}
+                `}
                 {...props}
             />
             {error && (
-                <p className="mt-1.5 text-xs text-[var(--error)]">{error}</p>
+                <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-red-500" />
+                    {error}
+                </p>
             )}
         </div>
     )
@@ -140,6 +147,7 @@ Textarea.displayName = 'Textarea';
 
 // Select Component
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+    id?: string;
     label?: string;
     error?: string;
     options: { value: string; label: string }[];
@@ -147,42 +155,46 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-    ({ label, error, options, fullWidth = true, className = '', ...props }, ref) => (
+    ({ id, label, error, options, fullWidth = true, className = '', ...props }, ref) => (
         <div className={`${fullWidth ? 'w-full' : ''}`}>
             {label && (
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                <label htmlFor={id} className="block text-[12px] font-semibold text-slate-500 mb-2 uppercase tracking-wider">
                     {label}
                 </label>
             )}
-            <select
-                ref={ref}
-                className={`
-          w-full px-4 py-3 text-sm appearance-none
-          text-[var(--text-primary)] bg-[var(--bg-secondary)]
-          border rounded-[var(--radius-md)]
-          transition-all duration-150
-          hover:border-[var(--border-medium)]
-          focus:border-[var(--accent-primary)] focus:ring-[3px] focus:ring-[rgba(99,102,241,0.15)]
-          outline-none cursor-pointer
-          ${error ? 'border-[var(--error)]' : 'border-[var(--border-light)]'}
-          ${className}
-        `}
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 12px center',
-                    backgroundSize: '16px',
-                }}
-                {...props}
-            >
-                {options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
+            <div className="relative">
+                <select
+                    ref={ref}
+                    id={id}
+                    className={`
+                      w-full px-4 py-3 appearance-none rounded-xl
+                      outline-none cursor-pointer
+                      bg-white border border-slate-200 text-slate-800
+                      focus:bg-white focus:border-emerald-500 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                      transition-all duration-300
+                      text-[14px]
+                      ${error ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}
+                      ${className}
+                    `}
+                    {...props}
+                >
+                    {options.map((option) => (
+                        <option key={option.value} value={option.value} className="bg-white text-slate-800">
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400" />
+                    </svg>
+                </div>
+            </div>
             {error && (
-                <p className="mt-1.5 text-xs text-[var(--error)]">{error}</p>
+                <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-red-500" />
+                    {error}
+                </p>
             )}
         </div>
     )

@@ -158,7 +158,7 @@ export default function AdminUsersPage() {
                         </div>
                     </Card>
                 ) : filteredUsers.length === 0 ? (
-                    <Card variant="glass" className="p-12 text-center">
+                    <Card variant="default" className="p-12 text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center">
                             <Users className="w-8 h-8 text-[var(--text-tertiary)]" />
                         </div>

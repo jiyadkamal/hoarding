@@ -69,11 +69,11 @@ export const Modal = ({
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         className={`
-              relative w-full ${sizeClasses[size]}
-              bg-[var(--bg-secondary)] border border-[var(--border-light)]
-              rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)]
-              max-h-[85vh] overflow-hidden
-            `}
+                            relative w-full ${sizeClasses[size]}
+                            bg-white border border-slate-100
+                            rounded-3xl shadow-2xl
+                            max-h-[85vh] overflow-hidden
+                        `}
                     >
                         {/* Header */}
                         {(title || showClose) && (

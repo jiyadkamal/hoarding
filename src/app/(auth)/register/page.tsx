@@ -4,9 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, Building2, Check } from 'lucide-react';
-import { Button, Input, Card } from '@/components/ui';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Mail, Lock, User, ArrowRight, Building2, CheckCircle2, ShieldCheck, Globe } from 'lucide-react';
+import { Button, Card, Input } from '@/components/ui';
 import { registerWithEmail } from '@/lib/firebase/auth';
 import { UserRole } from '@/types';
 
@@ -30,14 +29,13 @@ export default function RegisterPage() {
         e.preventDefault();
         setError('');
 
-        // Validation
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
+            setError('PIN codes do not match');
             return;
         }
 
         if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
+            setError('Access code must be 6+ characters');
             return;
         }
 
@@ -45,13 +43,12 @@ export default function RegisterPage() {
 
         try {
             await registerWithEmail(
-                formData.email,
-                formData.password,
-                formData.displayName,
+                formData.email.trim(),
+                formData.password.trim(),
+                formData.displayName.trim(),
                 formData.role as UserRole
             );
 
-            // Redirect based on role
             if (formData.role === 'owner') {
                 router.push('/owner/dashboard');
             } else {
@@ -59,13 +56,7 @@ export default function RegisterPage() {
             }
         } catch (err: any) {
             console.error('Registration error:', err);
-            if (err.code === 'auth/email-already-in-use') {
-                setError('An account with this email already exists');
-            } else if (err.code === 'auth/weak-password') {
-                setError('Password is too weak');
-            } else {
-                setError('Failed to create account. Please try again.');
-            }
+            setError('Account creation failed. Please check your details and try again.');
         } finally {
             setLoading(false);
         }
@@ -75,236 +66,187 @@ export default function RegisterPage() {
         {
             value: 'advertiser',
             title: 'Advertiser',
-            description: 'Book hoardings for your advertising campaigns',
-            icon: '📣',
+            description: 'Find and book billboard spaces',
+            icon: <Globe className="w-5 h-5" />,
         },
         {
             value: 'owner',
             title: 'Hoarding Owner',
-            description: 'List and manage your hoarding spaces',
-            icon: '🏢',
+            description: 'List and manage your spaces',
+            icon: <Building2 className="w-5 h-5" />,
         },
     ];
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] flex">
-            {/* Left Side - Decorative */}
-            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-500">
-                {/* Animated Background Elements */}
-                <div className="absolute inset-0">
-                    <div className="absolute top-32 right-32 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-32 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse delay-500" />
-                </div>
+        <div className="min-h-screen bg-[var(--bg-base)] flex page-wrapper overflow-hidden">
+            {/* Left Side - Welcome Section */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[var(--bg-surface)] border-r border-[var(--border-standard)]">
+                <div className="absolute inset-0 bg-grid-subtle opacity-20" />
 
-                {/* Content */}
-                <div className="relative z-10 flex flex-col justify-center p-12 text-white">
+                <div className="relative z-10 flex flex-col justify-center p-20 text-[var(--text-main)] space-y-12">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="space-y-10"
                     >
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                                <Building2 className="w-7 h-7" />
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-[var(--brand-primary)] flex items-center justify-center shadow-lg shadow-[var(--brand-primary)]/20">
+                                <Building2 className="w-6 h-6 text-black" />
                             </div>
-                            <span className="text-2xl font-bold">HoardBook</span>
+                            <span className="text-xl font-black uppercase tracking-tighter">HOARDBOOK</span>
                         </div>
 
-                        <h1 className="text-4xl font-bold mb-4 leading-tight">
-                            Join the Future of<br />
-                            Outdoor Advertising
-                        </h1>
-                        <p className="text-lg text-white/80 max-w-md mb-8">
-                            Whether you&apos;re looking to advertise or monetize your spaces,
-                            HoardBook connects you with the right opportunities.
-                        </p>
-
-                        {/* Features */}
                         <div className="space-y-4">
-                            {[
-                                'Real-time availability tracking',
-                                'Secure booking and payments',
-                                'Direct owner-advertiser connection',
-                                'Analytics and reporting',
-                            ].map((feature, idx) => (
-                                <motion.div
-                                    key={feature}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 + idx * 0.1 }}
-                                    className="flex items-center gap-3"
-                                >
-                                    <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                                        <Check className="w-4 h-4" />
-                                    </div>
-                                    <span className="text-white/90">{feature}</span>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* Grid Pattern */}
-                <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    }}
-                />
-            </div>
-
-            {/* Right Side - Register Form */}
-            <div className="flex-1 flex flex-col">
-                {/* Top Bar */}
-                <div className="h-16 px-8 flex items-center justify-between border-b border-[var(--border-light)]">
-                    <div className="lg:hidden flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                            <Building2 className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="font-semibold text-lg text-[var(--text-primary)]">HoardBook</span>
-                    </div>
-                    <div className="flex-1" />
-                    <ThemeToggle />
-                </div>
-
-                {/* Form Container */}
-                <div className="flex-1 flex items-center justify-center p-8 overflow-y-auto">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="w-full max-w-md"
-                    >
-                        <div className="text-center mb-8">
-                            <h2 className="text-2xl font-bold text-[var(--text-primary)]">Create an account</h2>
-                            <p className="text-[var(--text-secondary)] mt-2">
-                                Get started with HoardBook today
+                            <h1 className="text-5xl font-black uppercase tracking-tighter leading-none italic">
+                                JOIN THE <br />
+                                <span className="text-[var(--brand-primary)]">PLATFORM.</span>
+                            </h1>
+                            <p className="text-sm text-[var(--text-dim)] font-black uppercase tracking-widest max-w-sm">
+                                Create your account to start browsing and listing billboard spaces.
                             </p>
                         </div>
 
-                        <Card variant="glass" className="p-8">
-                            <form onSubmit={handleSubmit} className="space-y-5">
-                                {error && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="p-3 rounded-[var(--radius-md)] bg-red-500/10 border border-red-500/20 text-red-500 text-sm"
-                                    >
-                                        {error}
-                                    </motion.div>
-                                )}
-
-                                {/* Role Selection */}
-                                <div>
-                                    <label className="block text-sm font-medium text-[var(--text-primary)] mb-3">
-                                        I want to
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {roleOptions.map((option) => (
-                                            <button
-                                                key={option.value}
-                                                type="button"
-                                                onClick={() => setFormData((prev) => ({ ...prev, role: option.value as 'advertiser' | 'owner' }))}
-                                                className={`
-                          p-4 rounded-[var(--radius-md)] border-2 text-left transition-all duration-200
-                          ${formData.role === option.value
-                                                        ? 'border-[var(--accent-primary)] bg-[var(--accent-primary)]/5'
-                                                        : 'border-[var(--border-light)] hover:border-[var(--border-medium)]'
-                                                    }
-                        `}
-                                            >
-                                                <div className="text-2xl mb-2">{option.icon}</div>
-                                                <div className="font-medium text-sm text-[var(--text-primary)]">
-                                                    {option.title}
-                                                </div>
-                                                <div className="text-xs text-[var(--text-tertiary)] mt-0.5">
-                                                    {option.description}
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <Input
-                                    label="Full Name"
-                                    name="displayName"
-                                    type="text"
-                                    placeholder="John Doe"
-                                    value={formData.displayName}
-                                    onChange={handleChange}
-                                    icon={<User className="w-4 h-4" />}
-                                    required
-                                />
-
-                                <Input
-                                    label="Email Address"
-                                    name="email"
-                                    type="email"
-                                    placeholder="you@example.com"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    icon={<Mail className="w-4 h-4" />}
-                                    required
-                                />
-
-                                <Input
-                                    label="Password"
-                                    name="password"
-                                    type="password"
-                                    placeholder="Min. 6 characters"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    icon={<Lock className="w-4 h-4" />}
-                                    required
-                                />
-
-                                <Input
-                                    label="Confirm Password"
-                                    name="confirmPassword"
-                                    type="password"
-                                    placeholder="Confirm your password"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    icon={<Lock className="w-4 h-4" />}
-                                    required
-                                />
-
-                                <div className="text-xs text-[var(--text-tertiary)]">
-                                    By creating an account, you agree to our{' '}
-                                    <Link href="/terms" className="text-[var(--accent-primary)] hover:underline">
-                                        Terms of Service
-                                    </Link>{' '}
-                                    and{' '}
-                                    <Link href="/privacy" className="text-[var(--accent-primary)] hover:underline">
-                                        Privacy Policy
-                                    </Link>
-                                </div>
-
-                                <Button
-                                    type="submit"
-                                    variant="gradient"
-                                    size="lg"
-                                    fullWidth
-                                    loading={loading}
-                                    icon={<ArrowRight className="w-4 h-4" />}
-                                    iconPosition="right"
-                                >
-                                    Create Account
-                                </Button>
-                            </form>
-                        </Card>
-
-                        <p className="text-center mt-6 text-sm text-[var(--text-secondary)]">
-                            Already have an account?{' '}
-                            <Link
-                                href="/login"
-                                className="text-[var(--accent-primary)] font-medium hover:underline"
-                            >
-                                Sign in
-                            </Link>
-                        </p>
+                        <ul className="space-y-4 pt-4">
+                            {[
+                                "Live Hoarding Map",
+                                "Easy Booking System",
+                                "Verified Listings",
+                                "Campaign Analytics"
+                            ].map(text => (
+                                <li key={text} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)]">
+                                    <CheckCircle2 className="w-4 h-4 text-[var(--brand-primary)]" />
+                                    {text}
+                                </li>
+                            ))}
+                        </ul>
                     </motion.div>
                 </div>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="flex-1 flex flex-col items-center justify-center p-8 lg:p-20 relative overflow-y-auto">
+                <div className="absolute top-10 right-10">
+                    <ShieldCheck className="w-6 h-6 text-[var(--text-dim)]" />
+                </div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="w-full max-w-md space-y-10 py-10"
+                >
+                    <div className="text-center space-y-2">
+                        <h2 className="text-sm font-black text-[var(--brand-primary)] uppercase tracking-[0.4em]">Get Started</h2>
+                        <h3 className="text-3xl font-black text-[var(--text-main)] uppercase tracking-tighter italic">Create Account.</h3>
+                    </div>
+
+                    <Card className="p-10 !bg-[var(--bg-surface)] !border-[var(--border-standard)]">
+                        <form onSubmit={handleSubmit} className="space-y-8">
+                            {error && (
+                                <div className="p-4 rounded-md bg-[#ef4444]/10 border border-[#ef4444]/20 text-[#ef4444] text-[10px] font-black uppercase tracking-widest text-center">
+                                    {error}
+                                </div>
+                            )}
+
+                            {/* Role Selection */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em]">Select Account Type</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {roleOptions.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            type="button"
+                                            onClick={() => setFormData((prev) => ({ ...prev, role: option.value as 'advertiser' | 'owner' }))}
+                                            className={`
+                                                p-4 rounded-xl border-2 text-left transition-all
+                                                ${formData.role === option.value
+                                                    ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]/5'
+                                                    : 'border-[var(--border-standard)] hover:border(--text-dim)]'
+                                                }
+                                            `}
+                                        >
+                                            <div className={`mb-3 ${formData.role === option.value ? 'text-[var(--brand-primary)]' : 'text-[var(--text-dim)]'}`}>
+                                                {option.icon}
+                                            </div>
+                                            <div className="font-black text-[10px] uppercase text-[var(--text-main)] tracking-widest">{option.title}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <Input
+                                    id="displayName"
+                                    name="displayName"
+                                    label="Full Name"
+                                    autoComplete="name"
+                                    placeholder="Enter your name"
+                                    value={formData.displayName}
+                                    onChange={handleChange}
+                                    required
+                                />
+
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    label="Email Address"
+                                    autoComplete="email"
+                                    placeholder="user@example.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        label="Password"
+                                        autoComplete="new-password"
+                                        placeholder="••••••••"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <Input
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        type="password"
+                                        label="Confirm Password"
+                                        autoComplete="new-password"
+                                        placeholder="••••••••"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <Button
+                                type="submit"
+                                fullWidth
+                                loading={loading}
+                                icon={<ArrowRight className="w-4 h-4" />}
+                                iconPosition="right"
+                                className="h-14 !text-[10px]"
+                            >
+                                Create My Account
+                            </Button>
+                        </form>
+                    </Card>
+
+                    <p className="text-center text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)]">
+                        Already have an account?{' '}
+                        <Link
+                            href="/login"
+                            className="text-[var(--brand-primary)] hover:underline"
+                        >
+                            Sign In
+                        </Link>
+                    </p>
+                </motion.div>
             </div>
         </div>
     );
