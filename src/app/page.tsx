@@ -208,9 +208,9 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 className={`group rounded-2xl bg-white border border-slate-100 ${f.border} shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden`}
               >
-                <div className="h-[170px] overflow-hidden relative">
-                  <img src={f.img} alt={f.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" suppressHydrationWarning />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${f.gradient}`} />
+                <div className="h-[200px] relative flex items-center justify-center p-6 pb-2">
+                  <img src={f.img} alt={f.title} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700" suppressHydrationWarning />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${f.gradient} pointer-events-none`} />
                 </div>
                 <div className="p-6 space-y-3">
                   <div className="flex items-center gap-3">
