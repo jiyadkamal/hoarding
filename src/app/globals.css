@@ -68,6 +68,11 @@
 }
 
 /* Utilities */
+.bg-grid-subtle {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
 .pro-card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-standard);

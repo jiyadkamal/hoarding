@@ -46,6 +46,7 @@ export interface Hoarding {
   images: string[];
   isVerified: boolean;
   isActive: boolean;
+  type?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

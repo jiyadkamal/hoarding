@@ -49,97 +49,130 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex page-wrapper overflow-hidden">
-            {/* Left Side - Welcome Section */}
-            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-white border-r border-slate-200">
-                <div className="absolute inset-0 bg-grid-subtle opacity-40" />
+        <div className="min-h-screen bg-white flex overflow-hidden">
+            {/* Left Side - Cinematic Section */}
+            <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-[#0e1628]">
+                {/* Visual Elements */}
+                <div className="absolute inset-0 bg-grid-subtle opacity-20" />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] -mr-1 2 -mt-24 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] -ml-12 -mb-24 pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col justify-center p-20 space-y-12">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="space-y-8"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                                <Building2 className="w-6 h-6 text-white" />
-                            </div>
-                            <span className="text-xl font-bold tracking-tight text-slate-900">HoardBook</span>
+                <div className="relative z-10 flex flex-col justify-between p-16 w-full">
+                    {/* Logo Area */}
+                    <Link href="/" className="flex items-center gap-2.5 group">
+                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+                            <Building2 className="w-5 h-5 text-white" />
                         </div>
+                        <span className="text-xl font-bold tracking-tight text-white">
+                            Hoard<span className="text-emerald-400">Book</span>
+                        </span>
+                    </Link>
 
-                        <div className="space-y-4">
-                            <h1 className="text-5xl font-bold tracking-tight text-slate-900 leading-[1.1]">
-                                Hello again!<br />
-                                <span className="text-emerald-500">Sign in to your account.</span>
+                    {/* Content Area */}
+                    <div className="space-y-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6 }}
+                            className="space-y-5"
+                        >
+                            <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 rounded-full px-3 py-1">
+                                <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                                Welcome Back
+                            </span>
+                            <h1 className="text-5xl font-bold tracking-tight text-white leading-[1.1]">
+                                Empower your <br />
+                                <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent italic">advertising.</span>
                             </h1>
-                            <p className="text-base text-slate-500 font-medium max-w-sm">
-                                Access your dashboard to manage your billboards or book new advertising spaces.
+                            <p className="text-[15px] text-blue-100/40 leading-relaxed max-w-sm">
+                                Manage your outdoor media portfolio with precision and speed using our state-of-the-art marketplace.
                             </p>
-                        </div>
+                        </motion.div>
 
-                        {/* Simple Info Cards */}
-                        <div className="grid grid-cols-2 gap-4 pt-8">
-                            <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                                <p className="text-xs font-bold text-slate-900">Easy Management</p>
-                                <p className="text-[10px] text-slate-400">Control everything from one place.</p>
-                            </div>
-                            <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2">
-                                <ShieldCheck className="w-5 h-5 text-blue-500" />
-                                <p className="text-xs font-bold text-slate-900">Secure Payments</p>
-                                <p className="text-[10px] text-slate-400">Your data is always protected.</p>
-                            </div>
+                        {/* Features List */}
+                        <div className="grid gap-6 pt-4">
+                            {[
+                                { title: 'Live Analytics', desc: 'Monitor campaigns in real-time.', icon: Database, color: 'text-blue-400' },
+                                { title: 'Instant Booking', desc: 'Secure prime spots in seconds.', icon: CheckCircle2, color: 'text-emerald-400' },
+                            ].map((f, i) => (
+                                <motion.div
+                                    key={f.title}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.3 + i * 0.1 }}
+                                    className="flex items-center gap-4 group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                                        <f.icon className={`w-5 h-5 ${f.color}`} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[13px] font-bold text-white/90">{f.title}</p>
+                                        <p className="text-[11px] text-white/30">{f.desc}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </div>
-                    </motion.div>
+                    </div>
+
+                    {/* Footer Area */}
+                    <p className="text-[11px] font-medium text-white/20">
+                        &copy; 2026 HoardBook Platform. All rights reserved.
+                    </p>
                 </div>
             </div>
 
-            {/* Right Side - Form */}
-            <div className="flex-1 flex flex-col items-center justify-center p-8 lg:p-20 relative">
+            {/* Right Side - Form Section */}
+            <div className="flex-1 flex flex-col items-center justify-center p-8 lg:p-20 bg-[#f8fafc]">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-md space-y-8"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full max-w-md"
                 >
-                    <div className="text-center space-y-2">
-                        <h2 className="text-sm font-bold text-emerald-600 uppercase tracking-widest">Welcome Back</h2>
-                        <h3 className="text-3xl font-bold text-slate-900 tracking-tight">Sign In</h3>
+                    <div className="mb-10 text-center lg:text-left">
+                        <h2 className="text-[28px] font-bold text-slate-900 tracking-tight mb-2">Sign in</h2>
+                        <p className="text-slate-500 text-[14px]">
+                            Enter your credentials to access your dashboard.
+                        </p>
                     </div>
 
-                    <Card variant="default" className="p-10 shadow-xl shadow-slate-200/50">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="bg-white p-8 lg:p-10 rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-16 -mt-16" />
+
+                        <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
                             {error && (
-                                <div className="p-4 rounded-lg bg-red-50 border border-red-100 text-red-600 text-sm font-semibold text-center">
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-[13px] font-bold text-center"
+                                >
                                     {error}
-                                </div>
+                                </motion.div>
                             )}
 
-                            <div className="space-y-4">
+                            <div className="space-y-5">
                                 <Input
                                     id="email"
                                     name="email"
                                     label="Email Address"
                                     type="email"
-                                    autoComplete="email"
-                                    placeholder="john@example.com"
+                                    placeholder="name@company.com"
                                     icon={<Mail className="w-4 h-4" />}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
 
-                                <div className="space-y-1">
-                                    <div className="flex justify-between items-center ml-1">
-                                        <label htmlFor="password" title="passwordLabel" className="text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer">Password</label>
-                                        <Link href="#" className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700">Forgot it?</Link>
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center px-1">
+                                        <label htmlFor="password" title="passwordLabel" className="text-[10px] font-black uppercase tracking-widest text-slate-400">Password</label>
+                                        <Link href="#" className="text-[10px] font-bold text-emerald-600 hover:text-emerald-500 transition-colors">Forgot password?</Link>
                                     </div>
                                     <Input
                                         id="password"
                                         name="password"
                                         type="password"
-                                        autoComplete="current-password"
-                                        placeholder="Your password"
+                                        placeholder="••••••••"
                                         icon={<Lock className="w-4 h-4" />}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -152,22 +185,22 @@ export default function LoginPage() {
                                 type="submit"
                                 fullWidth
                                 loading={loading}
-                                icon={<ArrowRight className="w-4 h-4" />}
-                                iconPosition="right"
-                                className="h-14 shadow-lg shadow-emerald-500/20"
+                                className="h-14 rounded-2xl bg-[#0f172a] hover:bg-slate-800 text-white font-bold tracking-tight shadow-xl shadow-slate-200"
                             >
-                                Sign In
+                                <span className="flex items-center gap-2">
+                                    Sign in <ArrowRight className="w-4 h-4" />
+                                </span>
                             </Button>
                         </form>
-                    </Card>
+                    </div>
 
-                    <p className="text-center text-sm font-semibold text-slate-500">
-                        Don&apos;t have an account?{' '}
+                    <p className="mt-8 text-center text-[14px] font-medium text-slate-400">
+                        New to HoardBook?{' '}
                         <Link
                             href="/register"
-                            className="text-emerald-600 hover:text-emerald-700 font-bold"
+                            className="text-emerald-600 hover:text-emerald-500 font-bold transition-colors"
                         >
-                            Sign up here
+                            Create an account
                         </Link>
                     </p>
                 </motion.div>

@@ -52,10 +52,10 @@ export default function OwnerDashboardPage() {
     };
 
     const stats = [
-        { label: 'Total Listings', value: hoardings.length, icon: Building2, sub: "Verified Inventory" },
-        { label: 'Active Bookings', value: bookings.filter(b => ['approved', 'paid'].includes(b.status)).length, icon: Calendar, sub: "Active Contracts" },
-        { label: 'New Requests', value: bookings.filter(b => b.status === 'pending').length, icon: Clock, sub: "Pending Approval" },
-        { label: 'Total Revenue', value: `₹${bookings.filter(b => b.paymentStatus === 'confirmed').reduce((sum, b) => sum + b.totalAmount, 0).toLocaleString()}`, icon: IndianRupee, sub: "Gross Settlements" },
+        { label: 'Total Listings', value: hoardings.length, icon: Building2, sub: "Verified Inventory", color: "emerald" },
+        { label: 'Active Bookings', value: bookings.filter(b => ['approved', 'paid'].includes(b.status)).length, icon: Calendar, sub: "Active Contracts", color: "blue" },
+        { label: 'New Requests', value: bookings.filter(b => b.status === 'pending').length, icon: Clock, sub: "Pending Approval", color: "violet" },
+        { label: 'Total Revenue', value: `₹${bookings.filter(b => b.paymentStatus === 'confirmed').reduce((sum, b) => sum + b.totalAmount, 0).toLocaleString()}`, icon: IndianRupee, sub: "Gross Earnings", color: "amber" },
     ];
 
     const formatDate = (timestamp: any) => {
@@ -67,45 +67,45 @@ export default function OwnerDashboardPage() {
         <div className="min-h-screen bg-white">
             <Header
                 title="Dashboard"
-                subtitle="Overview of your listings and performance."
+                subtitle="Overview of your listings and business performance."
                 actions={
                     <Link href="/owner/hoardings/new">
-                        <button className="h-10 px-5 bg-emerald-500 text-white text-[13px] font-semibold rounded-lg hover:bg-emerald-600 transition flex items-center gap-2 shadow-lg shadow-emerald-500/20">
-                            <Plus className="w-4 h-4" /> Add New Hoarding
+                        <button className="h-11 px-6 bg-emerald-500 text-white text-[13px] font-bold rounded-xl hover:bg-emerald-400 transition flex items-center gap-2 shadow-xl shadow-emerald-500/20 active:scale-[0.98]">
+                            <Plus className="w-4 h-4" /> Add New Space
                         </button>
                     </Link>
                 }
             />
 
-            <div className="p-6 lg:p-8 space-y-10 max-w-[1400px] mx-auto">
+            <div className="p-8 lg:p-12 space-y-12 max-w-[1400px] mx-auto">
 
                 {/* Performance Analytics Header */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="p-6 bg-slate-50 border border-slate-150 rounded-2xl flex items-center justify-between group hover:border-emerald-500/30 transition-all">
-                        <div className="space-y-1.5">
+                    <div className="p-7 bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center justify-between group hover:bg-white hover:border-emerald-200 hover:shadow-xl transition-all duration-300">
+                        <div className="space-y-2">
                             <div className="flex items-center gap-2 text-slate-400">
-                                <BarChart className="w-3.5 h-3.5" />
-                                <span className="text-[11px] font-bold uppercase tracking-wider">Earnings Growth</span>
+                                <BarChart className="w-4 h-4 text-emerald-500/70" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Earnings Growth</span>
                             </div>
-                            <p className="text-2xl font-bold text-slate-800">+14.2% <span className="text-[12px] font-medium text-emerald-500 ml-1">vs last month</span></p>
+                            <p className="text-3xl font-black text-slate-900 tracking-tighter">+14.2% <span className="text-[12px] font-bold text-emerald-500 ml-1">↑</span></p>
                         </div>
                     </div>
-                    <div className="p-6 bg-slate-50 border border-slate-150 rounded-2xl flex items-center justify-between group hover:border-emerald-500/30 transition-all">
-                        <div className="space-y-1.5">
+                    <div className="p-7 bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center justify-between group hover:bg-white hover:border-blue-200 hover:shadow-xl transition-all duration-300">
+                        <div className="space-y-2">
                             <div className="flex items-center gap-2 text-slate-400">
-                                <PieChart className="w-3.5 h-3.5" />
-                                <span className="text-[11px] font-bold uppercase tracking-wider">Occupancy rate</span>
+                                <PieChart className="w-4 h-4 text-blue-500/70" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Occupancy rate</span>
                             </div>
-                            <p className="text-2xl font-bold text-slate-800">82.4% <span className="text-[12px] font-medium text-blue-500 ml-1">Optimal</span></p>
+                            <p className="text-3xl font-black text-slate-900 tracking-tighter">82.4% <span className="text-[12px] font-bold text-blue-500 ml-1">Optimal</span></p>
                         </div>
                     </div>
-                    <div className="p-6 bg-slate-50 border border-slate-150 rounded-2xl flex items-center justify-between group hover:border-emerald-500/30 transition-all">
-                        <div className="space-y-1.5">
+                    <div className="p-7 bg-slate-50 border border-slate-100 rounded-[2rem] flex items-center justify-between group hover:bg-white hover:border-violet-200 hover:shadow-xl transition-all duration-300">
+                        <div className="space-y-2">
                             <div className="flex items-center gap-2 text-slate-400">
-                                <Layers className="w-3.5 h-3.5" />
-                                <span className="text-[11px] font-bold uppercase tracking-wider">Platform Rank</span>
+                                <Layers className="w-4 h-4 text-violet-500/70" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Platform Rank</span>
                             </div>
-                            <p className="text-2xl font-bold text-slate-800">TOP 5% <span className="text-[12px] font-medium text-amber-500 ml-1">Verified Owner</span></p>
+                            <p className="text-3xl font-black text-slate-900 tracking-tighter">TOP 5% <span className="text-[12px] font-bold text-amber-500 ml-1">Pro Owner</span></p>
                         </div>
                     </div>
                 </div>
@@ -119,14 +119,18 @@ export default function OwnerDashboardPage() {
                     <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {stats.map((stat) => (
                             <StaggerItem key={stat.label}>
-                                <div className="p-6 bg-white border border-slate-150 rounded-2xl hover:border-emerald-500/50 hover:shadow-lg transition-all flex items-start justify-between group">
-                                    <div className="space-y-2">
-                                        <p className="text-[12px] font-medium text-slate-400">{stat.label}</p>
-                                        <p className="text-3xl font-bold text-slate-900 leading-none">{stat.value}</p>
-                                        <p className="text-[11px] font-semibold text-emerald-500 uppercase tracking-wider pt-2">{stat.sub}</p>
-                                    </div>
-                                    <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
-                                        <stat.icon className="w-5 h-5" />
+                                <div className="relative p-7 bg-white border border-slate-100 rounded-[2rem] hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-emerald-50 transition-colors" />
+
+                                    <div className="relative z-10 space-y-4">
+                                        <div className={`w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-lg shadow-slate-200/50 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500`}>
+                                            <stat.icon className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+                                            <p className="text-3xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
+                                        </div>
+                                        <p className="text-[10px] font-bold text-emerald-600/80 uppercase tracking-widest bg-emerald-50 w-fit px-2.5 py-1 rounded-full">{stat.sub}</p>
                                     </div>
                                 </div>
                             </StaggerItem>
@@ -134,39 +138,47 @@ export default function OwnerDashboardPage() {
                     </StaggerContainer>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Recent Requests */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 pt-4">
+                    {/* Recent Bookings */}
                     <FadeIn delay={0.2}>
-                        <div className="bg-white border border-slate-150 rounded-2xl overflow-hidden shadow-sm">
-                            <div className="p-6 flex items-center justify-between border-b border-slate-50">
-                                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Recent Bookings</h3>
+                        <div className="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-xl shadow-slate-200/40">
+                            <div className="p-8 pb-4 flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <h3 className="text-lg font-bold text-slate-900 tracking-tight">Recent Bookings</h3>
+                                    <p className="text-[13px] text-slate-400">Latest business activity</p>
+                                </div>
                                 <Link href="/owner/requests">
-                                    <button className="text-[12px] font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition">
-                                        View all <ChevronRight className="w-3.5 h-3.5" />
+                                    <button className="h-10 px-5 rounded-full border border-slate-100 text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition flex items-center gap-1.5">
+                                        Manage All <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </Link>
                             </div>
-                            <div className="p-6">
+                            <div className="p-8 pt-4">
                                 {bookings.length === 0 ? (
-                                    <div className="text-center py-16 opacity-30 flex flex-col items-center gap-3">
-                                        <Calendar className="w-10 h-10 text-slate-300" />
-                                        <p className="text-[13px] font-medium text-slate-400 uppercase tracking-wider">No bookings yet</p>
+                                    <div className="text-center py-20 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200 space-y-4">
+                                        <Calendar className="w-12 h-12 text-slate-200 mx-auto" />
+                                        <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest">No active bookings</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
                                         {bookings.slice(0, 5).map((booking) => (
                                             <div
                                                 key={booking.id}
-                                                className="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-100 hover:border-emerald-500/30 hover:shadow-sm transition-all"
+                                                className="flex items-center justify-between p-5 rounded-2xl bg-white border border-slate-50 hover:border-emerald-200 hover:shadow-lg transition-all group"
                                             >
-                                                <div className="space-y-1">
-                                                    <p className="text-[14px] font-semibold text-slate-800">{booking.advertiserName || 'Anonymous'}</p>
-                                                    <p className="text-[11px] text-slate-400">
-                                                        {formatDate(booking.startDate)} - {formatDate(booking.endDate)}
-                                                    </p>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-11 h-11 rounded-full bg-slate-50 flex items-center justify-center font-bold text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-colors">
+                                                        {booking.advertiserName?.charAt(0) || 'A'}
+                                                    </div>
+                                                    <div className="space-y-0.5">
+                                                        <p className="text-[14px] font-bold text-slate-900">{booking.advertiserName || 'Anonymous'}</p>
+                                                        <p className="text-[11px] font-medium text-slate-400">
+                                                            {formatDate(booking.startDate)} - {formatDate(booking.endDate)}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-5">
-                                                    <span className="text-[14px] font-bold text-slate-800">₹{booking.totalAmount.toLocaleString()}</span>
+                                                <div className="flex items-center gap-6">
+                                                    <span className="text-[15px] font-black text-slate-900">₹{booking.totalAmount.toLocaleString()}</span>
                                                     <StatusBadge status={booking.status} />
                                                 </div>
                                             </div>
@@ -179,22 +191,28 @@ export default function OwnerDashboardPage() {
 
                     {/* Inventory Snapshot */}
                     <FadeIn delay={0.3}>
-                        <div className="bg-white border border-slate-150 rounded-2xl overflow-hidden shadow-sm">
-                            <div className="p-6 flex items-center justify-between border-b border-slate-50">
-                                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Your Listings</h3>
+                        <div className="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-xl shadow-slate-200/40">
+                            <div className="p-8 pb-4 flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <h3 className="text-lg font-bold text-slate-900 tracking-tight">Your Listings</h3>
+                                    <p className="text-[13px] text-slate-400">Total active real-estate</p>
+                                </div>
                                 <Link href="/owner/hoardings">
-                                    <button className="text-[12px] font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition">
-                                        Manage inventory <ChevronRight className="w-3.5 h-3.5" />
+                                    <button className="h-10 px-5 rounded-full border border-slate-100 text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition flex items-center gap-1.5">
+                                        View Inventory <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </Link>
                             </div>
-                            <div className="p-6">
+                            <div className="p-8 pt-4">
                                 {hoardings.length === 0 ? (
-                                    <div className="text-center py-16 flex flex-col items-center gap-4">
-                                        <Building2 className="w-10 h-10 text-slate-200" />
-                                        <p className="text-[13px] font-medium text-slate-400 uppercase tracking-wider">Empty Inventory</p>
+                                    <div className="text-center py-20 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200 space-y-6">
+                                        <Building2 className="w-12 h-12 text-slate-200 mx-auto" />
+                                        <div className="space-y-2">
+                                            <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest">Inventory is empty</p>
+                                            <p className="text-[11px] text-slate-300">Add your first billboards to start earning</p>
+                                        </div>
                                         <Link href="/owner/hoardings/new">
-                                            <Button variant="primary" size="sm" className="!h-9 !px-4 !text-[12px]">Add first space</Button>
+                                            <Button variant="primary" className="h-11 px-6 rounded-xl font-bold text-[13px] shadow-lg shadow-emerald-500/20">Add first space</Button>
                                         </Link>
                                     </div>
                                 ) : (
@@ -202,28 +220,28 @@ export default function OwnerDashboardPage() {
                                         {hoardings.slice(0, 5).map((hoarding) => (
                                             <div
                                                 key={hoarding.id}
-                                                className="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-100 hover:border-emerald-500/30 transition-all"
+                                                className="flex items-center justify-between p-5 rounded-2xl bg-white border border-slate-50 hover:border-emerald-200 hover:shadow-lg transition-all group"
                                             >
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-10 rounded-lg bg-slate-50 border border-slate-150 overflow-hidden flex-shrink-0">
+                                                <div className="flex items-center gap-4 min-w-0">
+                                                    <div className="w-14 h-11 rounded-xl bg-slate-100 border border-slate-100 overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform">
                                                         {hoarding.images?.[0] ? (
                                                             <img src={hoarding.images[0]} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center">
-                                                                <Building2 className="w-4 h-4 text-slate-200" />
+                                                                <Building2 className="w-5 h-5 text-slate-300" />
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div className="space-y-1">
-                                                        <p className="text-[14px] font-semibold text-slate-800 leading-tight">{hoarding.title}</p>
-                                                        <p className="text-[11px] font-medium text-emerald-500 uppercase tracking-widest">{hoarding.location.city}</p>
+                                                    <div className="space-y-0.5 min-w-0">
+                                                        <p className="text-[14px] font-bold text-slate-900 truncate group-hover:text-emerald-600 transition-colors">{hoarding.title}</p>
+                                                        <p className="text-[11px] font-bold text-emerald-500/80 uppercase tracking-widest">{hoarding.location.city}</p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-3">
                                                     {hoarding.isVerified ? (
-                                                        <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase border border-emerald-100 italic">VERIFIED</span>
+                                                        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-100/50">Verified</span>
                                                     ) : (
-                                                        <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[9px] font-bold uppercase border border-amber-100 italic">PENDING</span>
+                                                        <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest border border-amber-100/50">Pending</span>
                                                     )}
                                                 </div>
                                             </div>
